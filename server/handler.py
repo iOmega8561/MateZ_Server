@@ -40,8 +40,8 @@ class ServerHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "application/json")
         self.end_headers()
-        to_encode = {"games": GAMES}
-        self.wfile.write(bytes(json.dumps(to_encode, cls=ComplexEncoder), "utf-8"))
+        _to_encode = {"games": GAMES}
+        self.wfile.write(bytes(json.dumps(_to_encode, cls=ComplexEncoder), "utf-8"))
 
     def __requests(self):
         self.send_response(200)
@@ -54,6 +54,22 @@ class ServerHandler(BaseHTTPRequestHandler):
 
         try:
             self._REQUESTS.add_request(query_components)
+        except RequestException as _e:
+            self.__send_status_message(400, _e.args[0])
+            return
+
+        self.__send_status_message(200, "Success")
+
+    def __delete(self, query_components):
+        """ Handler for /delete route """
+
+        if "uuid" not in query_components:
+            self.__send_status_message(404, "Failure")
+
+        _uuid = query_components["uuid"][0]
+
+        try:
+            self._REQUESTS.delete_request(_uuid)
         except RequestException as _e:
             self.__send_status_message(400, _e.args[0])
             return
@@ -84,6 +100,8 @@ class ServerHandler(BaseHTTPRequestHandler):
             self.__games()
         elif query_route == "/requests":
             self.__requests()
+        elif query_route == "/delete":
+            self.__delete(query_components)
         elif query_route == "/insert":
             self.__insert(query_components)
         else:

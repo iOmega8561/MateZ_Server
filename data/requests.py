@@ -60,8 +60,16 @@ class ServerRquests:
 
         return dict(requests = self.requests)
 
+    def delete_request(self, uuid):
+        """ This method gets called to remove a request from the dictionary """
+
+        if len(str(uuid)) < 1 or uuid not in self.requests:
+            raise RequestException("UUID not valid for deletion")
+
+        self.requests.pop(uuid)
+
     def add_request(self, query):
-        """ This method gets called to append a request to the list """
+        """ This method gets called to add a request to the dictionary """
 
         if len(query) < 9:
             raise RequestException("Not enough query parameters")
