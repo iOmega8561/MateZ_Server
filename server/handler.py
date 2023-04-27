@@ -15,7 +15,7 @@ class ServerHandler(BaseHTTPRequestHandler):
 
     def __send_status_message(self, code, message):
         self.send_response(code)
-        self.send_header("Content-type", "applic ation/json")
+        self.send_header("Content-type", "application/json")
         self.end_headers()
 
         message = {"answer": f"{message}"}
@@ -25,13 +25,16 @@ class ServerHandler(BaseHTTPRequestHandler):
         if "name" not in query_components:
             self.__send_status_message(404, "Failure")
 
-        self.send_response(200)
-        self.send_header("Content-type", "image/png")
-        self.end_headers()
-
         name = query_components["name"][0]
-        with open(f"imgs/{name}.png", "rb") as img:
-            self.wfile.write(img.read())
+
+        try:
+            with open(f"imgs/{name}.png", "rb") as img:
+                self.send_response(200)
+                self.send_header("Content-type", "image/png")
+                self.end_headers()
+                self.wfile.write(img.read())
+        except FileNotFoundError:
+            self.__send_status_message(404, "Failure")
 
     def __games(self):
         self.send_response(200)
