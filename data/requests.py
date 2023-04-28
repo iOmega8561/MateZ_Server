@@ -31,7 +31,8 @@ class UserRequest:
     desc: str
     mic: bool
     region: str
-    skill: str
+    pnumber: int
+    skills: [str]
     plat: str
     mode: str
 
@@ -46,7 +47,8 @@ class UserRequest:
             desc = self.desc,
             mic = self.mic,
             region = self.region,
-            skill = self.skill,
+            pnumber = self.pnumber,
+            skills = self.skills,
             plat = self.plat,
             mode = self.mode
         )
@@ -73,6 +75,8 @@ class ServerRquests:
 
     def add_request(self, query):
         """ This method gets called to add a request to the dictionary """
+
+        _skill = False
 
         if len(query) < 9:
             raise RequestError("Not enough query parameters")
@@ -103,10 +107,6 @@ class ServerRquests:
                 or len(str(query["region"][0])) < 1:
             raise RequestError("Invalid or missing region")
 
-        if "skill" not in query \
-                or query["skill"][0] not in GAMES[query["game"][0]].skills:
-            raise RequestError("Invalid or missing skill")
-
         if "plat" not in query \
                 or query["plat"][0] not in GAMES[query["game"][0]].plat:
             raise RequestError("Invalid or missing platform")
@@ -114,6 +114,18 @@ class ServerRquests:
         if "mode" not in query \
                 or query["mode"][0] not in GAMES[query["game"][0]].modes:
             raise RequestError("Invalid or missing gamemode")
+
+        if "pnumber" not in query \
+                or int(query["pnumber"][0]) < 1:
+            raise RequestError("Invalid or missing player number")
+
+        if "skills" in query:
+            for skill in query["skills"]:
+                print(skill)
+                if skill not in GAMES[query["game"][0]].skills:
+                    raise RequestError("Invalid or missing skill")
+
+            _skill = True
 
         _uuid = str(uuid4())
 
@@ -125,7 +137,8 @@ class ServerRquests:
                 query["desc"][0],
                 True if query["mic"][0] == "true" else False,
                 query["region"][0],
-                query["skill"][0],
+                query["pnumber"][0],
+                query["skills"] if _skill else [],
                 query["plat"][0],
                 query["mode"][0]
             )

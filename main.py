@@ -1,7 +1,7 @@
 """ This is the main 
 
     Just an example query
-    https://test.casarocco.keenetic.link/insert?user=someusername@mail.com&game=League%20of%20Legends&time=10&desc=blablablablablalba&mic=true&region=ITA&skill=Top&plat=PC&mode=Draft%20pick
+    https://test.casarocco.keenetic.link/insert?user=someusername@mail.com&game=League%20of%20Legends&time=10&desc=blablablablablalba&mic=true&region=ITA&pnumber=2&skills=Top&skills=Bottom&plat=PC&mode=Draft%20pick
 """
 
 from http.server import HTTPServer

@@ -33,7 +33,7 @@ GAMES = {
         "lol",
         ["PC"],
         ["Draft pick", "Blind pick", "Ranked Solo/Duo", "Ranked Flex", "Tournament", "Custom"],
-        ["Carry", "Top", "Mid", "Jungler", "Support", "Flex"]
+        ["Bottom", "Top", "Middle", "Jungle", "Support", "Flex"]
     ),
 
     "Counter Strike: GO": Game(
