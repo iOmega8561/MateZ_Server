@@ -22,6 +22,8 @@ class ComplexEncoder(json.JSONEncoder):
 class UserRequest:
     """ Data class for user requests """
 
+    # More than 7 instances are needed for our means
+
     uuid: str
     user_id: str
     game: str

@@ -91,7 +91,7 @@ class ServerHandler(BaseHTTPRequestHandler):
 
         self.__send_status_message(200, query_components["name"][0])
 
-    #Parent class method naming does not conform to PEP8
+    # Parent class method naming does not conform to PEP8
     def do_GET(self):
         """ Default get method handler """
 
