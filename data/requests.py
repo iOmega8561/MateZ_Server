@@ -29,7 +29,7 @@ class UserRequest:
     game: str
     time: int
     desc: str
-    pstyle: str
+    mic: bool
     region: str
     skill: str
     plat: str
@@ -44,7 +44,7 @@ class UserRequest:
             game = self.game,
             time = self.time,
             desc = self.desc,
-            pstyle = self.pstyle,
+            mic = self.mic,
             region = self.region,
             skill = self.skill,
             plat = self.plat,
@@ -94,9 +94,10 @@ class ServerRquests:
                 or len(str(query["desc"][0])) < 1:
             raise RequestError("Invalid or missing description")
 
-        if "pstyle" not in query \
-                or len(str(query["pstyle"][0])) < 1:
-            raise RequestError("Invalid or missing playstyle")
+        if "mic" not in query \
+                or (str(query["mic"][0]) != "true" \
+                and str(query["mic"][0]) != "false"):
+            raise RequestError("Invalid or missing mic")
 
         if "region" not in query \
                 or len(str(query["region"][0])) < 1:
@@ -122,7 +123,7 @@ class ServerRquests:
                 query["game"][0],
                 query["time"][0],
                 query["desc"][0],
-                query["pstyle"][0],
+                True if query["mic"][0] == "true" else False,
                 query["region"][0],
                 query["skill"][0],
                 query["plat"][0],

@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 DEFAULT_PLATFORMS = ["XBOX", "PlayStation", "PC", "Android", "iOS", "Switch"]
 DEFAULT_MODES = ["ranked", "unranked", "sandbox"]
 DEFAULT_SKILLSET = []
+DEFAULT_REGIONS = ["Italia"]
 
 @dataclass
 class Game:
@@ -32,7 +33,7 @@ GAMES = {
         "lol",
         ["PC"],
         ["Draft pick", "Blind pick", "Ranked Solo/Duo", "Ranked Flex", "Tournament", "Custom"],
-        ["Ranged", "Bruiser", "Tank", "Mage", "Assassin", "Flex"]
+        ["Carry", "Top", "Mid", "Jungler", "Support", "Flex"]
     ),
 
     "Counter Strike: GO": Game(
