@@ -5,7 +5,7 @@ from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 import json
 
-from data.requests import RequestException, ComplexEncoder, ServerRquests
+from data.requests import RequestError, ComplexEncoder, ServerRquests
 from data.games import GAMES
 
 class ServerHandler(BaseHTTPRequestHandler):
@@ -18,8 +18,9 @@ class ServerHandler(BaseHTTPRequestHandler):
         self.send_header("Content-type", "application/json")
         self.end_headers()
 
-        message = {"answer": f"{message}"}
-        self.wfile.write(bytes(json.dumps(message), "utf-8"))
+        self.wfile.write(bytes(
+                        json.dumps({"answer": f"{message}"}),
+                        "utf-8"))
 
     def __img(self, query_components):
         if "name" not in query_components:
@@ -40,21 +41,26 @@ class ServerHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "application/json")
         self.end_headers()
-        _to_encode = {"games": GAMES}
-        self.wfile.write(bytes(json.dumps(_to_encode, cls=ComplexEncoder), "utf-8"))
+        self.wfile.write(bytes(
+                        json.dumps({"games": GAMES},
+                                    cls = ComplexEncoder),
+                        "utf-8"))
 
     def __requests(self):
         self.send_response(200)
         self.send_header("Content-type", "application/json")
         self.end_headers()
-        self.wfile.write(bytes(json.dumps(self._REQUESTS.repr_json(), cls=ComplexEncoder), "utf-8"))
+        self.wfile.write(bytes(
+                        json.dumps(self._REQUESTS.repr_json(),
+                                     cls = ComplexEncoder),
+                        "utf-8"))
 
     def __insert(self, query_components):
         """ Handler for /insert route """
 
         try:
             self._REQUESTS.add_request(query_components)
-        except RequestException as _e:
+        except RequestError as _e:
             self.__send_status_message(400, _e.args[0])
             return
 
@@ -70,7 +76,7 @@ class ServerHandler(BaseHTTPRequestHandler):
 
         try:
             self._REQUESTS.delete_request(_uuid)
-        except RequestException as _e:
+        except RequestError as _e:
             self.__send_status_message(400, _e.args[0])
             return
 
@@ -85,6 +91,7 @@ class ServerHandler(BaseHTTPRequestHandler):
 
         self.__send_status_message(200, query_components["name"][0])
 
+    #Parent class method naming does not conform to PEP8
     def do_GET(self):
         """ Default get method handler """
 
@@ -94,15 +101,21 @@ class ServerHandler(BaseHTTPRequestHandler):
 
         if query_route == "/greet":
             self.__greet(query_components)
+
         elif query_route == "/img":
             self.__img(query_components)
+
         elif query_route == "/games":
             self.__games()
+
         elif query_route == "/requests":
             self.__requests()
+
         elif query_route == "/delete":
             self.__delete(query_components)
+
         elif query_route == "/insert":
             self.__insert(query_components)
+
         else:
             self.__send_status_message(404, "Route not found")

@@ -6,7 +6,7 @@ import json
 
 from data.games import GAMES
 
-class RequestException(Exception):
+class RequestError(Exception):
     """ This exception will be raised by the ServerRequest class methods """
 
 class ComplexEncoder(json.JSONEncoder):
@@ -63,8 +63,9 @@ class ServerRquests:
     def delete_request(self, uuid):
         """ This method gets called to remove a request from the dictionary """
 
-        if len(str(uuid)) < 1 or uuid not in self.requests:
-            raise RequestException("UUID not valid for deletion")
+        if len(str(uuid)) < 1 \
+                or uuid not in self.requests:
+            raise RequestError("UUID not valid for deletion")
 
         self.requests.pop(uuid)
 
@@ -72,25 +73,44 @@ class ServerRquests:
         """ This method gets called to add a request to the dictionary """
 
         if len(query) < 9:
-            raise RequestException("Not enough query parameters")
-        elif "user" not in query or len(str(query["user"][0])) < 1 :
-            raise RequestException("Invalid or missing user identifier")
-        elif "game" not in query or len(str(query["game"][0])) < 1 or query["game"][0] not in GAMES:
-            raise RequestException("Invalid or missing game")
-        elif "time" not in query or int(query["time"][0]) < 1:
-            raise RequestException("Invalid or missing timeframe")
-        elif "desc" not in query or len(str(query["desc"][0])) < 1:
-            raise RequestException("Invalid or missing description")
-        elif "pstyle" not in query or len(str(query["pstyle"][0])) < 1:
-            raise RequestException("Invalid or missing playstyle")
-        elif "region" not in query or len(str(query["region"][0])) < 1:
-            raise RequestException("Invalid or missing region")
-        elif "skill" not in query or query["skill"][0] not in GAMES[query["game"][0]].skills:
-            raise RequestException("Invalid or missing skill")
-        elif "plat" not in query or query["plat"][0] not in GAMES[query["game"][0]].plat:
-            raise RequestException("Invalid or missing platform")
-        elif "mode" not in query or query["mode"][0] not in GAMES[query["game"][0]].modes:
-            raise RequestException("Invalid or missing gamemode")
+            raise RequestError("Not enough query parameters")
+
+        if "user" not in query \
+                or len(str(query["user"][0])) < 1 :
+            raise RequestError("Invalid or missing user identifier")
+
+        if "game" not in query \
+                or len(str(query["game"][0])) < 1 \
+                or query["game"][0] not in GAMES:
+            raise RequestError("Invalid or missing game")
+
+        if "time" not in query \
+                or int(query["time"][0]) < 1:
+            raise RequestError("Invalid or missing timeframe")
+
+        if "desc" not in query \
+                or len(str(query["desc"][0])) < 1:
+            raise RequestError("Invalid or missing description")
+
+        if "pstyle" not in query \
+                or len(str(query["pstyle"][0])) < 1:
+            raise RequestError("Invalid or missing playstyle")
+
+        if "region" not in query \
+                or len(str(query["region"][0])) < 1:
+            raise RequestError("Invalid or missing region")
+
+        if "skill" not in query \
+                or query["skill"][0] not in GAMES[query["game"][0]].skills:
+            raise RequestError("Invalid or missing skill")
+
+        if "plat" not in query \
+                or query["plat"][0] not in GAMES[query["game"][0]].plat:
+            raise RequestError("Invalid or missing platform")
+
+        if "mode" not in query \
+                or query["mode"][0] not in GAMES[query["game"][0]].modes:
+            raise RequestError("Invalid or missing gamemode")
 
         _uuid = str(uuid4())
 

@@ -11,9 +11,9 @@ class Game:
     """ Data class for the Game object """
     name: str
     imgname: str
-    plat: [str] = field(default_factory=lambda: DEFAULT_PLATFORMS)
-    modes: [str] = field(default_factory=lambda: DEFAULT_MODES)
-    skills: [str] = field(default_factory=lambda: DEFAULT_SKILLSET)
+    plat: [str] = field(default_factory = lambda: DEFAULT_PLATFORMS)
+    modes: [str] = field(default_factory = lambda: DEFAULT_MODES)
+    skills: [str] = field(default_factory = lambda: DEFAULT_SKILLSET)
 
     def repr_json(self):
         """ This method gets called to get the dict rapresentation of the object """
