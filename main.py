@@ -2,6 +2,8 @@
 
     Just an example query
     https://test.casarocco.keenetic.link/insert?user=someusername@mail.com&game=League%20of%20Legends&time=10&desc=blablablablablalba&mic=true&region=ITA&pnumber=2&skills=Top&skills=Bottom&plat=PC&mode=Draft%20pick
+    https://test.casarocco.keenetic.link/insert?user=someusername@mail.com&game=Counter%20Strike:%20GO&time=10&desc=blablablablablalba&mic=true&region=ITA&pnumber=2&skills=Fluid%20Roles&plat=PC&mode=Competitive
+    https://test.casarocco.keenetic.link/insert?user=someusername@mail.com&game=Rainbow%20Six%20Siege&time=10&desc=blablablablablalba&mic=true&region=ITA&pnumber=1&skills=Fragger&plat=PC&mode=Unranked
 """
 import ssl
 from http.server import HTTPServer
