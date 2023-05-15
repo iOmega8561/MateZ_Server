@@ -121,7 +121,7 @@ class ServerRquests:
 
         if "skills" in query:
             for skill in query["skills"]:
-                print(skill)
+
                 if skill not in GAMES[query["game"][0]].skills:
                     raise RequestError("Invalid or missing skill")
 
@@ -133,12 +133,14 @@ class ServerRquests:
                 _uuid,
                 query["user"][0],
                 query["game"][0],
-                query["time"][0],
+                int(query["time"][0]),
                 query["desc"][0],
                 True if query["mic"][0] == "true" else False,
                 query["region"][0],
-                query["pnumber"][0],
+                int(query["pnumber"][0]),
                 query["skills"] if _skill else [],
                 query["plat"][0],
                 query["mode"][0]
             )
+
+        return _uuid

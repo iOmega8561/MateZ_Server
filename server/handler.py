@@ -5,13 +5,14 @@ from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 import json
 
+from server.mysql import MySQLhandler
 from data.requests import RequestError, ComplexEncoder, ServerRquests
 from data.games import GAMES
 
 class ServerHandler(BaseHTTPRequestHandler):
     """ Custom http request handler """
 
-    _REQUESTS: ServerRquests = ServerRquests(requests={})
+    _REQUESTS: ServerRquests = ServerRquests(requests = MySQLhandler.fetch_requests())
 
     def __send_status_message(self, code, message):
         self.send_response(code)
@@ -59,7 +60,8 @@ class ServerHandler(BaseHTTPRequestHandler):
         """ Handler for /insert route """
 
         try:
-            self._REQUESTS.add_request(query_components)
+            _uuid = self._REQUESTS.add_request(query_components)
+            MySQLhandler.insert_request(self._REQUESTS.requests[_uuid])
         except RequestError as _e:
             self.__send_status_message(400, _e.args[0])
             return
@@ -70,12 +72,13 @@ class ServerHandler(BaseHTTPRequestHandler):
         """ Handler for /delete route """
 
         if "uuid" not in query_components:
-            self.__send_status_message(404, "Failure")
+            self.__send_status_message(400, "Failure")
 
         _uuid = query_components["uuid"][0]
 
         try:
             self._REQUESTS.delete_request(_uuid)
+            MySQLhandler.delete_request(_uuid)
         except RequestError as _e:
             self.__send_status_message(400, _e.args[0])
             return
