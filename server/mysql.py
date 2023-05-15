@@ -43,6 +43,7 @@ class MySQLhandler:
                     return requests
                 except pymysql.Error as error:
                     print(f"MySQL error {error.args[0]}: {error.args[1]}")
+                    return {}
 
     @staticmethod
     def delete_request(uuid: str):
