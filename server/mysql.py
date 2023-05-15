@@ -32,7 +32,7 @@ class MySQLhandler:
                             result["game"],
                             result["time"],
                             result["description"],
-                            True if result["mic"] == 1 else False, 
+                            True if result["mic"] == 1 else False,
                             result["region"],
                             result["pnumber"],
                             json.loads(result["skills"]),
