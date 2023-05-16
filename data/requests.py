@@ -1,4 +1,4 @@
-""" This module contains the dataclasses for our server """
+""" This module contains the request dataclass and ServerRequest manager """
 
 from dataclasses import dataclass
 from uuid import uuid4
@@ -28,7 +28,6 @@ class UserRequest:
     user_id: str
     game: str
     time: int
-    desc: str
     mic: bool
     region: str
     pnumber: int
@@ -44,7 +43,6 @@ class UserRequest:
             user_id = self.user_id,
             game = self.game,
             time = self.time,
-            desc = self.desc,
             mic = self.mic,
             region = self.region,
             pnumber = self.pnumber,
@@ -78,7 +76,7 @@ class ServerRquests:
 
         _skill = False
 
-        if len(query) < 9:
+        if len(query) < 8:
             raise RequestError("Not enough query parameters")
 
         if "user" not in query \
@@ -93,10 +91,6 @@ class ServerRquests:
         if "time" not in query \
                 or int(query["time"][0]) < 1:
             raise RequestError("Invalid or missing timeframe")
-
-        if "desc" not in query \
-                or len(str(query["desc"][0])) < 1:
-            raise RequestError("Invalid or missing description")
 
         if "mic" not in query \
                 or (str(query["mic"][0]) != "true" \
@@ -134,7 +128,6 @@ class ServerRquests:
                 query["user"][0],
                 query["game"][0],
                 int(query["time"][0]),
-                query["desc"][0],
                 True if query["mic"][0] == "true" else False,
                 query["region"][0],
                 int(query["pnumber"][0]),

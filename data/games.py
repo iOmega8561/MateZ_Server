@@ -3,9 +3,8 @@
 from dataclasses import dataclass, field
 
 DEFAULT_PLATFORMS = ["XBOX", "PlayStation", "PC", "Android", "iOS", "Switch"]
-DEFAULT_MODES = ["ranked", "unranked", "sandbox"]
+DEFAULT_MODES = []
 DEFAULT_SKILLSET = []
-DEFAULT_REGIONS = ["Italia"]
 
 @dataclass
 class Game:
@@ -33,7 +32,7 @@ GAMES = {
         "lol",
         ["PC"],
         ["Draft pick", "Blind pick", "Ranked Solo/Duo", "Ranked Flex", "Tournament", "Custom"],
-        ["Bottom", "Top", "Middle", "Jungle", "Support", "Flex"]
+        ["Bottom", "Top", "Middle", "Jungle", "Support"]
     ),
 
     "Counter Strike: GO": Game(
@@ -41,7 +40,7 @@ GAMES = {
         "csgo",
         ["PC", "XBOX"],
         ["Casual", "Competitive", "Wingman", "Deathmatch", "Custom", "War Games", "Danger Zone"],
-        ["Leader", "Support", "Lurk", "AWPer", "Fluid Roles"]
+        ["Leader", "Support", "Lurk", "AWPer"]
     ),
 
     "Rainbow Six Siege": Game(
@@ -49,6 +48,6 @@ GAMES = {
         "r6s",
         ["PC", "PlayStation", "XBOX"],
         ["Unranked", "Ranked", "Tournament", "Custom"],
-        ["Leader", "Fragger", "Support", "Flex", "Anchor", "Roamer", "Fluid Roles"]
+        ["Leader", "Fragger", "Support", "Flex", "Anchor", "Roamer"]
     ),
 }

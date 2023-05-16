@@ -31,7 +31,6 @@ class MySQLhandler:
                             result["user_id"],
                             result["game"],
                             result["time"],
-                            result["description"],
                             True if result["mic"] == 1 else False,
                             result["region"],
                             result["pnumber"],
@@ -69,15 +68,14 @@ class MySQLhandler:
 
                 try:
                     sql = "insert into requests \
-                        (uuid, user_id, game, time, description, mic, region, pnumber, skills, plat, gamemode) \
-                        values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                        (uuid, user_id, game, time, mic, region, pnumber, skills, plat, gamemode) \
+                        values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
                     cursor.execute(sql, (
                         req.uuid,
                         req.user_id,
                         req.game,
                         int(req.time),
-                        req.desc,
                         req.mic,
                         req.region,
                         int(req.pnumber),

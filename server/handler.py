@@ -7,11 +7,13 @@ import json
 
 from server.mysql import MySQLhandler
 from data.requests import RequestError, ComplexEncoder, ServerRquests
+from data.users import UserError, ServerUsers
 from data.games import GAMES
 
 class ServerHandler(BaseHTTPRequestHandler):
     """ Custom http request handler """
 
+    _USERS: ServerUsers = ServerUsers(users = {})
     _REQUESTS: ServerRquests = ServerRquests(requests = MySQLhandler.fetch_requests())
 
     def __send_status_message(self, code, message):
@@ -85,14 +87,28 @@ class ServerHandler(BaseHTTPRequestHandler):
 
         self.__send_status_message(200, "Success")
 
-    def __greet(self, query_components):
-        """ Handler for /greet route """
+    def __signup(self, query_components):
+        """ Handler for /signup route """
 
-        if "name" not in query_components:
-            self.__send_status_message(400, "Failure")
+        try:
+            self._USERS.add_user(query_components)
+        except UserError as _e:
+            self.__send_status_message(400, _e.args[0])
             return
 
-        self.__send_status_message(200, query_components["name"][0])
+        self.__send_status_message(200, "Success")
+
+    def __signin(self, query_components):
+        """ Handler for /signin route """
+
+        try:
+            _user = self._USERS.retrieve_user(query_components)
+            print(_user)
+        except UserError as _e:
+            self.__send_status_message(400, _e.args[0])
+            return
+
+        self.__send_status_message(200, "Success")
 
     # Parent class method naming does not conform to PEP8
     def do_GET(self):
@@ -102,8 +118,11 @@ class ServerHandler(BaseHTTPRequestHandler):
         query_route = parsed_url.path
         query_components = parse_qs(parsed_url.query)
 
-        if query_route == "/greet":
-            self.__greet(query_components)
+        if query_route == "/signup":
+            self.__signup(query_components)
+
+        elif query_route == "/signin":
+            self.__signin(query_components)
 
         elif query_route == "/img":
             self.__img(query_components)
