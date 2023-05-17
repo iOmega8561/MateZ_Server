@@ -1,7 +1,10 @@
 """ This module contains the user dataclass """
 
 import hashlib
+import re
 from dataclasses import dataclass
+
+MAIL_REGEX = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
 
 class UserError(Exception):
     """ This exception will be raised by the ServerUsers class methods """
@@ -49,18 +52,18 @@ class ServerUsers:
         if "email" not in query \
                 or len(str(query["email"][0])) < 1 \
                 or query["email"][0] not in self.users:
-            raise UserError("Invalid or missing email")
+            raise UserError("Invalid email")
 
         if "password" not in query \
                 or len(str(query["password"][0])) < 1:
-            raise UserError("Invalid or missing password")
+            raise UserError("Invalid password")
 
         _email = query["email"][0]
         _enc_pass = query["password"][0].encode()
         _hash_pass = hashlib.md5(_enc_pass).hexdigest()
 
         if self.users[_email].hashedpass != _hash_pass:
-            raise UserError("Wrong password")
+            raise UserError("Invalid password")
 
         return self.users[_email]
 
@@ -74,6 +77,9 @@ class ServerUsers:
                 or len(str(query["email"][0])) < 1:
             raise UserError("Invalid or missing email")
 
+        if not re.fullmatch(MAIL_REGEX, query["email"][0]):
+            raise UserError("Invalid email format")
+
         if query["email"][0] in self.users:
             raise UserError("User exists already")
 
@@ -85,11 +91,14 @@ class ServerUsers:
                 or len(str(query["password"][0])) < 1:
             raise UserError("Invalid or missing password")
 
+        _email = query["email"][0]
         _enc_pass = query["password"][0].encode()
         _hash_pass = hashlib.md5(_enc_pass).hexdigest()
 
-        self.users[query["email"][0]] = User(
-            email = query["email"][0],
+        self.users[_email] = User(
+            email = _email,
             username = query["username"][0],
             hashedpass = _hash_pass
         )
+
+        return _email

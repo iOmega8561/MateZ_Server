@@ -3,6 +3,7 @@
 import json
 import pymysql
 from data.requests import UserRequest
+from data.users import User
 
 CONNECTION = pymysql.connect("localhost",
                                 "webapp",
@@ -12,6 +13,67 @@ CONNECTION = pymysql.connect("localhost",
 
 class MySQLhandler:
     """ This class provides the interface for the mysql database """
+
+    @staticmethod
+    def fetch_users():
+        """ This method will be used to fetch all User objects from remote database """
+
+        with CONNECTION:
+            with CONNECTION.cursor() as cursor:
+
+                try:
+                    sql = "select * from users"
+                    cursor.execute(sql)
+                    users = {}
+
+                    for result in cursor.fetchall():
+                        users[result["email"]] = User(
+                            result["email"],
+                            result["username"],
+                            result["hashedpass"]
+                        )
+
+                    return users
+                except pymysql.Error as error:
+                    print(f"MySQL error {error.args[0]}: {error.args[1]}")
+                    return {}
+
+    @staticmethod
+    def delete_user(email: str):
+        """ This method will be used to delete User objects from remote database """
+
+        with CONNECTION:
+            with CONNECTION.cursor() as cursor:
+
+                try:
+                    sql = "delete from users where email = %s"
+                    cursor.execute(sql, (email))
+
+                    CONNECTION.commit()
+                except pymysql.Error as error:
+                    print(f"MySQL error {error.args[0]}: {error.args[1]}")
+
+    @staticmethod
+    def insert_user(user: User):
+        """ This method will be used to send User objects to remote database """
+
+        with CONNECTION:
+            with CONNECTION.cursor() as cursor:
+
+                try:
+                    sql = "insert into users \
+                        (email, username, hashedpass) \
+                        values (%s, %s, %s)"
+
+                    cursor.execute(sql, (
+                        user.email,
+                        user.username,
+                        user.hashedpass
+                    ))
+
+                    CONNECTION.commit()
+                except pymysql.Error as error:
+                    print(f"MySQL error {error.args[0]}: {error.args[1]}")
 
     @staticmethod
     def fetch_requests():
