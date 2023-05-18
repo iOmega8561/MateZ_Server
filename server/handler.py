@@ -11,6 +11,11 @@ from data.requests import RequestError, ComplexEncoder, ServerRquests
 from data.users import UserError, ServerUsers
 from data.games import GAMES
 
+def STD_MSG(string: str):
+    """ Standard status message format for our application """
+
+    return json.dumps({"answer": f"{string}"})
+
 class ServerHandler(BaseHTTPRequestHandler):
     """ Custom http request handler """
 
@@ -18,21 +23,16 @@ class ServerHandler(BaseHTTPRequestHandler):
     _USERS: ServerUsers = ServerUsers(users = MySQLhandler.fetch_users())
     _REQUESTS: ServerRquests = ServerRquests(requests = MySQLhandler.fetch_requests())
 
-    def __send_status_message(self, code, string, message):
+    def __send_status_message(self, code, message):
         self.send_response(code)
         self.send_header("Content-type", "application/json")
         self.end_headers()
 
-        if string:
-            self.wfile.write(bytes(
-                            json.dumps({"answer": f"{message}"}),
-                            "utf-8"))
-        else:
-            self.wfile.write(bytes(message, "utf-8"))
+        self.wfile.write(bytes(message, "utf-8"))
 
     def __img(self, query_components):
         if "name" not in query_components:
-            self.__send_status_message(404, True, "Failure")
+            self.__send_status_message(404, STD_MSG("Failure"))
 
         name = query_components["name"][0]
 
@@ -43,14 +43,14 @@ class ServerHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(img.read())
         except FileNotFoundError:
-            self.__send_status_message(404, True, "Failure")
+            self.__send_status_message(404, STD_MSG("Failure"))
 
     def __games(self):
-        self.__send_status_message(200, False, json.dumps({"games": GAMES},
-                                                            cls = ComplexEncoder))
+        self.__send_status_message(200, json.dumps({"games": GAMES},
+                                                 cls = ComplexEncoder))
 
     def __requests(self):
-        self.__send_status_message(200, False, json.dumps(self._REQUESTS.repr_json(),
+        self.__send_status_message(200, json.dumps(self._REQUESTS.repr_json(),
                                                             cls = ComplexEncoder))
 
     def __insert(self, query_components):
@@ -60,16 +60,16 @@ class ServerHandler(BaseHTTPRequestHandler):
             _uuid = self._REQUESTS.add_request(query_components)
             MySQLhandler.insert_request(self._REQUESTS.requests[_uuid])
         except RequestError as _e:
-            self.__send_status_message(400, True, _e.args[0])
+            self.__send_status_message(400, STD_MSG(_e.args[0]))
             return
 
-        self.__send_status_message(200, True, "Success")
+        self.__send_status_message(200, STD_MSG("Success"))
 
     def __delete(self, query_components):
         """ Handler for /delete route """
 
         if "uuid" not in query_components:
-            self.__send_status_message(400, True, "Failure")
+            self.__send_status_message(400, STD_MSG("Failure"))
 
         _uuid = query_components["uuid"][0]
 
@@ -77,50 +77,45 @@ class ServerHandler(BaseHTTPRequestHandler):
             self._REQUESTS.delete_request(_uuid)
             MySQLhandler.delete_request(_uuid)
         except RequestError as _e:
-            self.__send_status_message(400, True, _e.args[0])
+            self.__send_status_message(400, STD_MSG(_e.args[0]))
             return
 
-        self.__send_status_message(200, True, "Success")
+        self.__send_status_message(200, STD_MSG("Success"))
 
     def __logout(self, query_components):
         """ Handler for /logout route """
 
-        if "email" not in query_components \
-                or len(str(query_components["email"][0])) < 1:
-            self.__send_status_message(400, True, "Invalid email")
+        if "username" not in query_components \
+                or len(str(query_components["username"][0])) < 1:
+            self.__send_status_message(400, STD_MSG("Invalid username"))
 
-        elif query_components["email"][0] in self._TOKENS:
-            self._TOKENS.pop(query_components["email"][0])
-            self.__send_status_message(200, True, "Success")
+        elif query_components["username"][0] in self._TOKENS:
+            self._TOKENS.pop(query_components["username"][0])
+            self.__send_status_message(200, STD_MSG("Success"))
 
     def __signup(self, query_components):
         """ Handler for /signup route """
 
         try:
-            _email = self._USERS.add_user(query_components)
-            MySQLhandler.insert_user(self._USERS.users[_email])
+            _username = self._USERS.add_user(query_components)
+            MySQLhandler.insert_user(self._USERS.users[_username])
         except UserError as _e:
-            self.__send_status_message(400, True, _e.args[0])
+            self.__send_status_message(400, STD_MSG(_e.args[0]))
             return
 
-        self.__send_status_message(200, True, "Success")
+        self.__send_status_message(200, STD_MSG("Success"))
 
     def __signin(self, query_components):
         """ Handler for /signin route """
 
         try:
             _user = self._USERS.retrieve_user(query_components)
-            self._TOKENS[_user.email] = uuid4()
+            self._TOKENS[_user.username] = uuid4()
         except UserError as _e:
-            self.__send_status_message(400, True, _e.args[0])
+            self.__send_status_message(400, STD_MSG(_e.args[0]))
             return
 
-        self.__send_status_message(
-            200,
-            False,
-            json.dumps({"answer": str(self._TOKENS[_user.email]), "user": _user}, 
-                                                            cls = ComplexEncoder)
-        )
+        self.__send_status_message(200, STD_MSG(str(self._TOKENS[_user.username])))
 
     # Parent class method naming does not conform to PEP8
     def do_GET(self):
@@ -155,4 +150,4 @@ class ServerHandler(BaseHTTPRequestHandler):
             self.__insert(query_components)
 
         else:
-            self.__send_status_message(404, True, "Route not found")
+            self.__send_status_message(404, json.dumps({"answer": "Route not found"}))

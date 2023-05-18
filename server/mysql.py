@@ -27,8 +27,7 @@ class MySQLhandler:
                     users = {}
 
                     for result in cursor.fetchall():
-                        users[result["email"]] = User(
-                            result["email"],
+                        users[result["username"]] = User(
                             result["username"],
                             result["hashedpass"]
                         )
@@ -39,15 +38,15 @@ class MySQLhandler:
                     return {}
 
     @staticmethod
-    def delete_user(email: str):
+    def delete_user(username: str):
         """ This method will be used to delete User objects from remote database """
 
         with CONNECTION:
             with CONNECTION.cursor() as cursor:
 
                 try:
-                    sql = "delete from users where email = %s"
-                    cursor.execute(sql, (email))
+                    sql = "delete from users where username = %s"
+                    cursor.execute(sql, (username))
 
                     CONNECTION.commit()
                 except pymysql.Error as error:
@@ -62,11 +61,10 @@ class MySQLhandler:
 
                 try:
                     sql = "insert into users \
-                        (email, username, hashedpass) \
-                        values (%s, %s, %s)"
+                        (username, hashedpass) \
+                        values (%s, %s)"
 
                     cursor.execute(sql, (
-                        user.email,
                         user.username,
                         user.hashedpass
                     ))

@@ -4,8 +4,6 @@ import hashlib
 import re
 from dataclasses import dataclass
 
-MAIL_REGEX = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
-
 class UserError(Exception):
     """ This exception will be raised by the ServerUsers class methods """
 
@@ -13,7 +11,6 @@ class UserError(Exception):
 class User:
     """ This class represents the user data model """
 
-    email: str
     username: str
     hashedpass: str
 
@@ -21,7 +18,6 @@ class User:
         """ This method gets called to get the dict rapresentation of the object """
 
         return dict(
-            email = self.email,
             username = self.username,
             hashedpass = self.hashedpass
         )
@@ -37,68 +33,65 @@ class ServerUsers:
 
         return dict(users = self.users)
 
-    def delete_user(self, email):
+    def delete_user(self, username):
         """ This method gets called to delete a user from the dictionary """
 
-        if len(str(email)) < 1 \
-                or email not in self.users:
-            raise UserError("EMAIL not valid for deletion")
+        if len(str(username)) < 1 \
+                or username not in self.users:
+            raise UserError("Invalid username")
 
-        self.users.pop(email)
+        self.users.pop(username)
 
     def retrieve_user(self, query):
         """ This method gets called to retrieve a user object from the dictionary """
 
-        if "email" not in query \
-                or len(str(query["email"][0])) < 1 \
-                or query["email"][0] not in self.users:
-            raise UserError("Invalid email")
+        if "username" not in query \
+                or len(str(query["username"][0])) < 1 \
+                or query["username"][0] not in self.users:
+            raise UserError("Invalid username")
 
         if "password" not in query \
                 or len(str(query["password"][0])) < 1:
             raise UserError("Invalid password")
 
-        _email = query["email"][0]
+        _username = query["username"][0]
         _enc_pass = query["password"][0].encode()
         _hash_pass = hashlib.md5(_enc_pass).hexdigest()
 
-        if self.users[_email].hashedpass != _hash_pass:
+        if self.users[_username].hashedpass != _hash_pass:
             raise UserError("Invalid password")
 
-        return self.users[_email]
+        return self.users[_username]
 
     def add_user(self, query):
         """ This method gets called to add a new user to the dictionary """
 
-        if len(query) < 3:
+        if len(query) < 2:
             raise UserError("Not enough query parameters")
-
-        if "email" not in query \
-                or len(str(query["email"][0])) < 1:
-            raise UserError("Invalid or missing email")
-
-        if not re.fullmatch(MAIL_REGEX, query["email"][0]):
-            raise UserError("Invalid email format")
-
-        if query["email"][0] in self.users:
-            raise UserError("User exists already")
 
         if "username" not in query \
                 or len(str(query["username"][0])) < 1:
             raise UserError("Invalid or missing username")
 
+        _regex = re.compile('[@!#$%^&*()<>?/\|}{~:]')
+
+        if _regex.search(query["username"][0]) is not None:
+            raise UserError("Invalid username chars")
+
+        if query["username"][0] in self.users:
+            raise UserError("User exists already")
+
         if "password" not in query \
                 or len(str(query["password"][0])) < 1:
             raise UserError("Invalid or missing password")
 
-        _email = query["email"][0]
+        _username = query["username"][0]
         _enc_pass = query["password"][0].encode()
         _hash_pass = hashlib.md5(_enc_pass).hexdigest()
 
-        self.users[_email] = User(
-            email = _email,
-            username = query["username"][0],
+        self.users[_username] = User(
+            username = _username,
             hashedpass = _hash_pass
         )
 
-        return _email
+        return _username
