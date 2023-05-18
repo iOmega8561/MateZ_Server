@@ -93,6 +93,24 @@ class ServerHandler(BaseHTTPRequestHandler):
             self._TOKENS.pop(query_components["username"][0])
             self.__send_status_message(200, STD_MSG("Success"))
 
+    def __lastsession(self, query_components):
+        """ Handler for /lastsession route """
+
+        if "username" not in query_components \
+                or len(str(query_components["username"][0])) < 1 \
+                or query_components["username"][0] not in self._TOKENS:
+            print("invalid username")
+            self.__send_status_message(400, STD_MSG("Invalid username"))
+
+        elif "token" not in query_components \
+                or len(str(query_components["token"][0])) < 1 \
+                or query_components["token"][0] != str(self._TOKENS[query_components["username"][0]]):
+            print("invalid token")
+            self.__send_status_message(400, STD_MSG("Invalid token"))
+
+        else:
+            self.__send_status_message(200, STD_MSG("Success"))
+
     def __signup(self, query_components):
         """ Handler for /signup route """
 
@@ -130,6 +148,9 @@ class ServerHandler(BaseHTTPRequestHandler):
 
         elif query_route == "/signin":
             self.__signin(query_components)
+
+        elif query_route == "/lastsession":
+            self.__lastsession(query_components)
 
         elif query_route == "/logout":
             self.__logout(query_components)
