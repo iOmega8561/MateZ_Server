@@ -99,13 +99,11 @@ class ServerHandler(BaseHTTPRequestHandler):
         if "username" not in query_components \
                 or len(str(query_components["username"][0])) < 1 \
                 or query_components["username"][0] not in self._TOKENS:
-            print("invalid username")
             self.__send_status_message(400, STD_MSG("Invalid username"))
 
         elif "token" not in query_components \
                 or len(str(query_components["token"][0])) < 1 \
                 or query_components["token"][0] != str(self._TOKENS[query_components["username"][0]]):
-            print("invalid token")
             self.__send_status_message(400, STD_MSG("Invalid token"))
 
         else:
@@ -135,6 +133,40 @@ class ServerHandler(BaseHTTPRequestHandler):
 
         self.__send_status_message(200, STD_MSG(str(self._TOKENS[_user.username])))
 
+    def __getprofile(self, query_components):
+        if "username" not in query_components \
+                or len(str(query_components["username"][0])) < 1 \
+                or query_components["username"][0] not in self._USERS.users:
+            self.__send_status_message(400, STD_MSG("Invalid username"))
+
+        _user = self._USERS.users[query_components["username"][0]]
+
+        self.__send_status_message(200, json.dumps({
+            "username": _user.username,
+            "avatar": _user.avatar
+        }))
+
+    def __updateuser(self, query_components):
+        if "username" not in query_components \
+                or len(str(query_components["username"][0])) < 1 \
+                or query_components["username"][0] not in self._TOKENS:
+            self.__send_status_message(400, STD_MSG("Invalid username"))
+
+        elif "token" not in query_components \
+                or len(str(query_components["token"][0])) < 1 \
+                or query_components["token"][0] != str(self._TOKENS[query_components["username"][0]]):
+            self.__send_status_message(400, STD_MSG("Invalid token"))
+
+        else:
+            query_components.pop("token")
+
+            try:
+                _user = self._USERS.update_user(query_components)
+                MySQLhandler.update_user(_user)
+                self.__send_status_message(200, STD_MSG("Success"))
+            except UserError as _e:
+                self.__send_status_message(400, STD_MSG(_e.args[0]))
+
     # Parent class method naming does not conform to PEP8
     def do_GET(self):
         """ Default get method handler """
@@ -151,6 +183,12 @@ class ServerHandler(BaseHTTPRequestHandler):
 
         elif query_route == "/lastsession":
             self.__lastsession(query_components)
+
+        elif query_route == "/getprofile":
+            self.__getprofile(query_components)
+        
+        elif query_route == "/updateuser":
+            self.__updateuser(query_components)
 
         elif query_route == "/logout":
             self.__logout(query_components)

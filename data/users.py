@@ -13,13 +13,15 @@ class User:
 
     username: str
     hashedpass: str
+    avatar: str
 
     def repr_json(self):
         """ This method gets called to get the dict rapresentation of the object """
 
         return dict(
             username = self.username,
-            hashedpass = self.hashedpass
+            hashedpass = self.hashedpass,
+            avatar = self.avatar
         )
 
 @dataclass
@@ -63,6 +65,27 @@ class ServerUsers:
 
         return self.users[_username]
 
+    def update_user(self, query):
+        """ This method gets called to update a user object in the dictionary """
+
+        if len(query) < 2:
+            raise UserError("Not enough query parameters")
+
+        if "username" not in query \
+                or len(str(query["username"][0])) < 1 \
+                or query["username"][0] not in self.users:
+            raise UserError("Invalid username")
+
+        if "avatar" not in query \
+                or len(str(query["avatar"][0])) < 1:
+            raise UserError("Invalid avatar")
+
+        _username = query["username"][0]
+
+        self.users[_username].avatar = query["avatar"][0]
+
+        return self.users[_username]
+
     def add_user(self, query):
         """ This method gets called to add a new user to the dictionary """
 
@@ -91,7 +114,8 @@ class ServerUsers:
 
         self.users[_username] = User(
             username = _username,
-            hashedpass = _hash_pass
+            hashedpass = _hash_pass,
+            avatar = "user_generic"
         )
 
         return _username

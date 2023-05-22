@@ -29,7 +29,8 @@ class MySQLhandler:
                     for result in cursor.fetchall():
                         users[result["username"]] = User(
                             result["username"],
-                            result["hashedpass"]
+                            result["hashedpass"],
+                            result["avatar"]
                         )
 
                     return users
@@ -47,6 +48,25 @@ class MySQLhandler:
                 try:
                     sql = "delete from users where username = %s"
                     cursor.execute(sql, (username))
+
+                    CONNECTION.commit()
+                except pymysql.Error as error:
+                    print(f"MySQL error {error.args[0]}: {error.args[1]}")
+
+    @staticmethod
+    def update_user(user: User):
+        """ This method will be used to update User objects in remote database """
+
+        with CONNECTION:
+            with CONNECTION.cursor() as cursor:
+
+                try:
+                    sql = "update users set avatar = %s where username = %s"
+
+                    cursor.execute(sql, (
+                        user.avatar,
+                        user.username
+                    ))
 
                     CONNECTION.commit()
                 except pymysql.Error as error:
