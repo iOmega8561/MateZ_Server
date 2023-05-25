@@ -30,7 +30,8 @@ class MySQLhandler:
                         users[result["username"]] = User(
                             result["username"],
                             result["hashedpass"],
-                            result["avatar"]
+                            result["avatar"],
+                            json.loads(result["fgames"])
                         )
 
                     return users
@@ -61,10 +62,11 @@ class MySQLhandler:
             with CONNECTION.cursor() as cursor:
 
                 try:
-                    sql = "update users set avatar = %s where username = %s"
+                    sql = "update users set avatar = %s, fgames = %s where username = %s"
 
                     cursor.execute(sql, (
                         user.avatar,
+                        json.dumps(user.fgames),
                         user.username
                     ))
 
@@ -81,12 +83,14 @@ class MySQLhandler:
 
                 try:
                     sql = "insert into users \
-                        (username, hashedpass) \
-                        values (%s, %s)"
+                        (username, hashedpass, avatar, fgames) \
+                        values (%s, %s, %s, %s)"
 
                     cursor.execute(sql, (
                         user.username,
-                        user.hashedpass
+                        user.hashedpass,
+                        user.avatar,
+                        user.fgames
                     ))
 
                     CONNECTION.commit()

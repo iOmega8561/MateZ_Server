@@ -143,7 +143,8 @@ class ServerHandler(BaseHTTPRequestHandler):
 
         self.__send_status_message(200, json.dumps({
             "username": _user.username,
-            "avatar": _user.avatar
+            "avatar": _user.avatar,
+            "fgames": _user.fgames
         }))
 
     def __updateuser(self, query_components):

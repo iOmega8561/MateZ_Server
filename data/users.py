@@ -2,6 +2,7 @@
 
 import hashlib
 import re
+import json
 from dataclasses import dataclass
 
 class UserError(Exception):
@@ -14,6 +15,7 @@ class User:
     username: str
     hashedpass: str
     avatar: str
+    fgames: [dict[str, [str]]]
 
     def repr_json(self):
         """ This method gets called to get the dict rapresentation of the object """
@@ -21,7 +23,8 @@ class User:
         return dict(
             username = self.username,
             hashedpass = self.hashedpass,
-            avatar = self.avatar
+            avatar = self.avatar,
+            fgames = self.fgames
         )
 
 @dataclass
@@ -68,7 +71,7 @@ class ServerUsers:
     def update_user(self, query):
         """ This method gets called to update a user object in the dictionary """
 
-        if len(query) < 2:
+        if len(query) < 3:
             raise UserError("Not enough query parameters")
 
         if "username" not in query \
@@ -80,9 +83,13 @@ class ServerUsers:
                 or len(str(query["avatar"][0])) < 1:
             raise UserError("Invalid avatar")
 
+        if "fgames" not in query:
+            raise UserError("Invalid fgames")
+
         _username = query["username"][0]
 
         self.users[_username].avatar = query["avatar"][0]
+        self.users[_username].fgames = json.loads(query["fgames"][0])
 
         return self.users[_username]
 
@@ -115,7 +122,8 @@ class ServerUsers:
         self.users[_username] = User(
             username = _username,
             hashedpass = _hash_pass,
-            avatar = "user_generic"
+            avatar = "user_generic",
+            fgames = []
         )
 
         return _username
