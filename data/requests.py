@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from uuid import uuid4
+from datetime import datetime
 import json
 
 from data.games import GAMES
@@ -34,6 +35,7 @@ class UserRequest:
     skills: [str]
     plat: str
     mode: str
+    date: datetime
 
     def repr_json(self):
         """ This method gets called to get the dict rapresentation of the object """
@@ -48,7 +50,8 @@ class UserRequest:
             pnumber = self.pnumber,
             skills = self.skills,
             plat = self.plat,
-            mode = self.mode
+            mode = self.mode,
+            date = self.date
         )
 
 @dataclass
@@ -133,7 +136,8 @@ class ServerRquests:
                 int(query["pnumber"][0]),
                 query["skills"] if _skill else [],
                 query["plat"][0],
-                query["mode"][0]
+                query["mode"][0],
+                datetime.now().isoformat()
             )
 
         return _uuid

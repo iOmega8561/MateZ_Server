@@ -2,6 +2,7 @@
 
 import json
 import pymysql
+from datetime import datetime
 from data.requests import UserRequest
 from data.users import User
 
@@ -120,7 +121,8 @@ class MySQLhandler:
                             result["pnumber"],
                             json.loads(result["skills"]),
                             result["plat"],
-                            result["gamemode"]
+                            result["gamemode"],
+                            result["submitdate"].isoformat()
                         )
 
                     return requests
@@ -152,8 +154,8 @@ class MySQLhandler:
 
                 try:
                     sql = "insert into requests \
-                        (uuid, user_id, game, time, mic, region, pnumber, skills, plat, gamemode) \
-                        values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                        (uuid, user_id, game, time, mic, region, pnumber, skills, plat, gamemode, submitdate) \
+                        values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
                     cursor.execute(sql, (
                         req.uuid,
@@ -165,7 +167,8 @@ class MySQLhandler:
                         int(req.pnumber),
                         json.dumps(req.skills),
                         req.plat,
-                        req.mode
+                        req.mode,
+                        req.date
                     ))
 
                     CONNECTION.commit()
