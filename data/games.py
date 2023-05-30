@@ -92,7 +92,7 @@ GAMES = {
     ),
 
     "Grand Theft Auto V": Game(
-        "Grand Theft Auto V"
+        "Grand Theft Auto V",
         "gtav",
         ["PC", "PlayStation", "XBOX"],
         ["Freemode", "Deathmatch", "Race", "Contend", "Hold", "Last Team Standing", "Raid", "Event Activities", "Any Activity"],
