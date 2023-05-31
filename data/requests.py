@@ -137,7 +137,7 @@ class ServerRquests:
                 query["skills"] if _skill else [],
                 query["plat"][0],
                 query["mode"][0],
-                datetime.now().isoformat()
+                datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
             )
 
         return _uuid

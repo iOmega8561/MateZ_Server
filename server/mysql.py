@@ -2,7 +2,6 @@
 
 import json
 import pymysql
-from datetime import datetime
 from data.requests import UserRequest
 from data.users import User
 
