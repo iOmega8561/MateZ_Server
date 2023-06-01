@@ -66,7 +66,7 @@ class MySQLhandler:
                     sql = "update users set \
                         avatar = %s, \
                         region = %s, \
-                        fgames = %s, where username = %s"
+                        fgames = %s where username = %s"
 
                     cursor.execute(sql, (
                         user.avatar,

@@ -16,7 +16,7 @@ class User:
     hashedpass: str
     avatar: str
     region: str
-    fgames: [dict[str, [str]]]
+    fgames: [str]
 
     def repr_json(self):
         """ This method gets called to get the dict rapresentation of the object """
