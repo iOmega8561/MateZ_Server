@@ -144,6 +144,7 @@ class ServerHandler(BaseHTTPRequestHandler):
         self.__send_status_message(200, json.dumps({
             "username": _user.username,
             "avatar": _user.avatar,
+            "region": _user.region,
             "fgames": _user.fgames
         }))
 

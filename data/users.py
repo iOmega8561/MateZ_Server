@@ -15,6 +15,7 @@ class User:
     username: str
     hashedpass: str
     avatar: str
+    region: str
     fgames: [dict[str, [str]]]
 
     def repr_json(self):
@@ -24,6 +25,7 @@ class User:
             username = self.username,
             hashedpass = self.hashedpass,
             avatar = self.avatar,
+            region = self.region,
             fgames = self.fgames
         )
 
@@ -122,6 +124,7 @@ class ServerUsers:
         self.users[_username] = User(
             username = _username,
             hashedpass = _hash_pass,
+            region = "af",
             avatar = "user_generic",
             fgames = []
         )
