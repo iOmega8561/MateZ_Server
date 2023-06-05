@@ -96,7 +96,7 @@ class MySQLhandler:
                         user.hashedpass,
                         user.avatar,
                         user.region,
-                        user.fgames
+                        json.dumps(user.fgames)
                     ))
 
                     CONNECTION.commit()

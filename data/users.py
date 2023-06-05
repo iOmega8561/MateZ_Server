@@ -73,7 +73,7 @@ class ServerUsers:
     def update_user(self, query):
         """ This method gets called to update a user object in the dictionary """
 
-        if len(query) < 3:
+        if len(query) < 4:
             raise UserError("Not enough query parameters")
 
         if "username" not in query \
@@ -85,6 +85,10 @@ class ServerUsers:
                 or len(str(query["avatar"][0])) < 1:
             raise UserError("Invalid avatar")
 
+        if "region" not in query \
+            or len(str(query["region"][0])) < 1:
+            raise UserError("Invalid region")
+
         if "fgames" not in query:
             raise UserError("Invalid fgames")
 
@@ -92,6 +96,7 @@ class ServerUsers:
 
         self.users[_username].avatar = query["avatar"][0]
         self.users[_username].fgames = json.loads(query["fgames"][0])
+        self.users[_username].region = query["region"][0]
 
         return self.users[_username]
 
@@ -124,7 +129,7 @@ class ServerUsers:
         self.users[_username] = User(
             username = _username,
             hashedpass = _hash_pass,
-            region = "af",
+            region = "n_a",
             avatar = "user_generic",
             fgames = []
         )
