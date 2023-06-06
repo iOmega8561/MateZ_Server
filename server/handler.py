@@ -115,11 +115,12 @@ class ServerHandler(BaseHTTPRequestHandler):
         try:
             _username = self._USERS.add_user(query_components)
             MySQLhandler.insert_user(self._USERS.users[_username])
+            self._TOKENS[_username] = uuid4()
         except UserError as _e:
             self.__send_status_message(400, STD_MSG(_e.args[0]))
             return
 
-        self.__send_status_message(200, STD_MSG("Success"))
+        self.__send_status_message(200, STD_MSG(str(self._TOKENS[_username])))
 
     def __signin(self, query_components):
         """ Handler for /signin route """
