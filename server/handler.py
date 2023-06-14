@@ -189,7 +189,7 @@ class ServerHandler(BaseHTTPRequestHandler):
 
         elif query_route == "/getprofile":
             self.__getprofile(query_components)
-        
+
         elif query_route == "/updateuser":
             self.__updateuser(query_components)
 
