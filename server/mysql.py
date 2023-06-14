@@ -22,7 +22,7 @@ class MySQLhandler:
             with CONNECTION.cursor() as cursor:
 
                 try:
-                    sql = "select * from users"
+                    sql = "select * from user"
                     cursor.execute(sql)
                     users = {}
 
@@ -48,7 +48,7 @@ class MySQLhandler:
             with CONNECTION.cursor() as cursor:
 
                 try:
-                    sql = "delete from users where username = %s"
+                    sql = "delete from user where username = %s"
                     cursor.execute(sql, (username))
 
                     CONNECTION.commit()
@@ -63,7 +63,7 @@ class MySQLhandler:
             with CONNECTION.cursor() as cursor:
 
                 try:
-                    sql = "update users set \
+                    sql = "update user set \
                         avatar = %s, \
                         region = %s, \
                         fgames = %s where username = %s"
@@ -87,7 +87,7 @@ class MySQLhandler:
             with CONNECTION.cursor() as cursor:
 
                 try:
-                    sql = "insert into users \
+                    sql = "insert into user \
                         (username, hashedpass, avatar, region, fgames) \
                         values (%s, %s, %s, %s, %s)"
 
@@ -111,7 +111,7 @@ class MySQLhandler:
             with CONNECTION.cursor() as cursor:
 
                 try:
-                    sql = "select * from requests"
+                    sql = "select * from request"
                     cursor.execute(sql)
                     requests = {}
 
@@ -143,7 +143,7 @@ class MySQLhandler:
             with CONNECTION.cursor() as cursor:
 
                 try:
-                    sql = "delete from requests where uuid = %s"
+                    sql = "delete from request where uuid = %s"
                     cursor.execute(sql, (uuid))
 
                     CONNECTION.commit()
@@ -158,7 +158,7 @@ class MySQLhandler:
             with CONNECTION.cursor() as cursor:
 
                 try:
-                    sql = "insert into requests \
+                    sql = "insert into request \
                         (uuid, user_id, game, time, mic, region, pnumber, skills, plat, gamemode, submitdate) \
                         values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
