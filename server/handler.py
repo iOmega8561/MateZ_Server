@@ -142,7 +142,7 @@ class ServerHandler(BaseHTTPRequestHandler):
         except UserError as _e:
             self.__send_status_message(400, STD_MSG(_e.args[0]))
             return
-        
+
         self.__send_status_message(200, STD_MSG("Success"))
 
     def __getprofile(self, query_components):
@@ -197,7 +197,7 @@ class ServerHandler(BaseHTTPRequestHandler):
 
         elif query_route == "/lastsession":
             self.__lastsession(query_components)
-        
+
         elif query_route == "/pwdvalid":
             self.__pwdvalid(query_components)
 
