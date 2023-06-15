@@ -134,6 +134,17 @@ class ServerHandler(BaseHTTPRequestHandler):
 
         self.__send_status_message(200, STD_MSG(str(self._TOKENS[_user.username])))
 
+    def __pwdvalid(self, query_components):
+        """ Handler for /pwdvalid route """
+
+        try:
+            _user = self._USERS.retrieve_user(query_components)
+        except UserError as _e:
+            self.__send_status_message(400, STD_MSG(_e.args[0]))
+            return
+        
+        self.__send_status_message(200, STD_MSG("Success"))
+
     def __getprofile(self, query_components):
         if "username" not in query_components \
                 or len(str(query_components["username"][0])) < 1 \
@@ -186,6 +197,9 @@ class ServerHandler(BaseHTTPRequestHandler):
 
         elif query_route == "/lastsession":
             self.__lastsession(query_components)
+        
+        elif query_route == "/pwdvalid":
+            self.__pwdvalid(query_components)
 
         elif query_route == "/getprofile":
             self.__getprofile(query_components)
