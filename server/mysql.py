@@ -19,6 +19,8 @@ class MySQLhandler:
         """ This method will be used to fetch all User objects from remote database """
 
         with CONNECTION:
+            CONNECTION.ping(reconnect=True)
+
             with CONNECTION.cursor() as cursor:
 
                 try:
@@ -45,6 +47,8 @@ class MySQLhandler:
         """ This method will be used to delete User objects from remote database """
 
         with CONNECTION:
+            CONNECTION.ping(reconnect=True)
+
             with CONNECTION.cursor() as cursor:
 
                 try:
@@ -60,6 +64,8 @@ class MySQLhandler:
         """ This method will be used to update User objects in remote database """
 
         with CONNECTION:
+            CONNECTION.ping(reconnect=True)
+
             with CONNECTION.cursor() as cursor:
 
                 try:
@@ -84,6 +90,8 @@ class MySQLhandler:
         """ This method will be used to send User objects to remote database """
 
         with CONNECTION:
+            CONNECTION.ping(reconnect=True)
+
             with CONNECTION.cursor() as cursor:
 
                 try:
@@ -108,6 +116,8 @@ class MySQLhandler:
         """ This method will be used to fetch all UserRequest objects from remote database """
 
         with CONNECTION:
+            CONNECTION.ping(reconnect=True)
+
             with CONNECTION.cursor() as cursor:
 
                 try:
@@ -140,6 +150,8 @@ class MySQLhandler:
         """ This method will be used to delete UserRequest objects from remote database """
 
         with CONNECTION:
+            CONNECTION.ping(reconnect=True)
+
             with CONNECTION.cursor() as cursor:
 
                 try:
@@ -155,6 +167,8 @@ class MySQLhandler:
         """ This method will be used to send UserRequest objects to remote database """
 
         with CONNECTION:
+            CONNECTION.ping(reconnect=True)
+
             with CONNECTION.cursor() as cursor:
 
                 try:
