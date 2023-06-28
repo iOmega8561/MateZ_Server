@@ -5,10 +5,10 @@ import pymysql
 from data.requests import UserRequest
 from data.users import User
 
-CONNECTION = pymysql.connect("localhost",
-                                "webapp",
-                                "webapp",
-                                "webapp",
+CONNECTION = pymysql.connect(host = "localhost",
+                                user = "webapp",
+                                password = "webapp",
+                                db = "webapp",
                                 cursorclass = pymysql.cursors.DictCursor)
 
 class MySQLhandler:
